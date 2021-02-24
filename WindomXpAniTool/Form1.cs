@@ -21,6 +21,7 @@ namespace WindomXpAniTool
 
         private void loadAniToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Windom Animation Data (.ani)|*.ani";
             if (ofd.ShowDialog() == DialogResult.OK)
@@ -34,35 +35,63 @@ namespace WindomXpAniTool
                 if (recentFiles.Count > 10)
                     recentFiles.RemoveAt(11);
                 updateRecent();
-                saveData();
-                file.load(ofd.FileName);
-                lstAnimations.Items.Clear();
-                for (int i = 0; i < file.animations.Count; i++)
+                try
                 {
-                    lstAnimations.Items.Add(i.ToString() + " - " + file.animations[i].name);
+                    saveData();
+                    file.load(ofd.FileName);
+                    lstAnimations.Items.Clear();
+                    for (int i = 0; i < file.animations.Count; i++)
+                    {
+                        lstAnimations.Items.Add(i.ToString() + " - " + file.animations[i].name);
+                    }
+
+                    MsgLog.Text = "Ani File has been loaded";
+                }
+                catch
+                {
+                    MsgLog.Text = "Error - Couldn't Load File";
                 }
             }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            DirectoryInfo di = new DirectoryInfo(file._filename);
-            for (int i = 0; i < lstAnimations.Items.Count; i++)
+            if (lstAnimations.SelectedItems.Count > 0 && cbScriptFormat.SelectedIndex > -1 && cbHodFormat.SelectedIndex > -1)
             {
-                
-                if (lstAnimations.GetSelected(i))
+                DirectoryInfo di = new DirectoryInfo(file._filename);
+                for (int i = 0; i < lstAnimations.Items.Count; i++)
                 {
-                    string dir = Path.Combine(di.Parent.Name, helper.replaceUnsupportedChar(lstAnimations.Items[i].ToString()));
-                    switch(cbScriptFormat.SelectedIndex)
+
+                    if (lstAnimations.GetSelected(i))
                     {
-                        case 0:
-                            file.animations[i].extractToFolderXML(dir, cbHodFormat.SelectedIndex);
-                            break;
-                        case 1:
-                            file.animations[i].extractToFolderTXT(dir, cbHodFormat.SelectedIndex);
-                            break;
+                        string dir = Path.Combine(di.Parent.Name, helper.replaceUnsupportedChar(lstAnimations.Items[i].ToString()));
+                        switch (cbScriptFormat.SelectedIndex)
+                        {
+                            case 0:
+                                file.animations[i].extractToFolderXML(dir, cbHodFormat.SelectedIndex);
+                                break;
+                            case 1:
+                                file.animations[i].extractToFolderTXT(dir, cbHodFormat.SelectedIndex);
+                                break;
+                        }
+
                     }
-                    
+                }
+            }
+            else
+            {
+                if (lstAnimations.SelectedItems.Count <= 0)
+                    MsgLog.Text = "No animation has been selected";
+                else
+                {
+                    if (cbScriptFormat.SelectedIndex < 0 && cbHodFormat.SelectedIndex < 0)
+                        MsgLog.Text = "Script Format and Hod Format not selected";
+                    else if (cbScriptFormat.SelectedIndex < 0)
+                        MsgLog.Text = "Script Format not selected";
+                    else if (cbHodFormat.SelectedIndex > 0)
+                        MsgLog.Text = "Hod Format not selected";
+                    else
+                        MsgLog.Text = "Error - We have an hacker here.";
                 }
             }
         }
@@ -74,8 +103,10 @@ namespace WindomXpAniTool
             //BinaryWriter bw = new BinaryWriter(File.Open(Path.Combine(di.Parent.Name, file.structure.filename), FileMode.CreateNew));
             //bw.Write(file.structure.data);
             //bw.Close();
-
-            file.structure.saveToFile(di.Parent.Name, cbHodFormat.SelectedIndex);
+            if (cbHodFormat.SelectedIndex > -1)
+                file.structure.saveToFile(di.Parent.Name, cbHodFormat.SelectedIndex);
+            else
+                MsgLog.Text = "Hod Format not selected";
         }
 
         private void saveAniToolStripMenuItem_Click(object sender, EventArgs e)

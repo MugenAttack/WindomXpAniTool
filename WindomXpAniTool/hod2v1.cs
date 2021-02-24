@@ -128,7 +128,7 @@ namespace WindomXpAniTool
         {
             if (type == 0)
             {
-                BinaryWriter bw = new BinaryWriter(File.Open(Path.Combine(folder, filename), FileMode.CreateNew));
+                BinaryWriter bw = new BinaryWriter(File.Open(Path.Combine(folder, filename), FileMode.Create));
                 saveToBinary(ref bw);
                 bw.Close();
             }
