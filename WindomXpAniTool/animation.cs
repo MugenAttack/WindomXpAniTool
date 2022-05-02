@@ -161,8 +161,8 @@ namespace WindomXpAniTool
                 for (int i = 0; i < scripts.Count; i++)
                 {
                     xw.WriteStartElement("Script");
-                    xw.WriteAttributeString("unk", scripts[i].unk.ToString());
-                    xw.WriteAttributeString("time", scripts[i].time.ToString());
+                    xw.WriteAttributeString("TimetoNextScript", scripts[i].unk.ToString());
+                    xw.WriteAttributeString("HodTransitionPerFrame", scripts[i].time.ToString());
                     xw.WriteString(scripts[i].squirrel.ToString());
                     xw.WriteEndElement();
                 }
@@ -204,11 +204,11 @@ namespace WindomXpAniTool
                 XmlNode eventItem = eventList.Item(i);
                 script nScript = new script();
                 int pInt;
-                if (int.TryParse(eventItem.Attributes["unk"].Value, out pInt))
+                if (int.TryParse(eventItem.Attributes["TimetoNextScript"].Value, out pInt))
                     nScript.unk = pInt;
 
                 float pFloat;
-                if (float.TryParse(eventItem.Attributes["time"].Value, out pFloat))
+                if (float.TryParse(eventItem.Attributes["HodTransitionPerFrame"].Value, out pFloat))
                     nScript.time = pFloat;
 
                 nScript.squirrel = eventItem.InnerText;
