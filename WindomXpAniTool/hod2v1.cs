@@ -86,10 +86,7 @@ namespace WindomXpAniTool
 
         public void saveToBinary(ref BinaryWriter bw)
         {
-            Encoding ShiftJis = Encoding.GetEncoding("shift_jis");
-            byte[] shiftjistext = ShiftJis.GetBytes(filename);
-            bw.Write((short)shiftjistext.Length);
-            bw.Write(shiftjistext);
+            
             //bw.Write(data);
             bw.Write(ASCIIEncoding.ASCII.GetBytes("HD2"));
             bw.Write(1);

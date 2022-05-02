@@ -100,6 +100,9 @@ namespace WindomXpAniTool
 
             for (int i = 0; i < frames.Count; i++)
             {
+                shiftjistext = ShiftJis.GetBytes(frames[i].filename);
+                bw.Write((short)shiftjistext.Length);
+                bw.Write(shiftjistext);
                 frames[i].saveToBinary(ref bw);
             }
 
